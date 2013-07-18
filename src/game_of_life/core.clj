@@ -16,14 +16,8 @@
 	(difference (neighbors cell) (live-neighbors cell live-cells)))
 
 (defn num-live-neighbors
-	"Takes in a cell (coordinate pair),
-	and the complete set of ACTIVE cells, return the num of ACTIVE neighbors"
 	[cell, live-cells]
 	(count (live-neighbors cell live-cells)))
-
-(defn num-dead-neighbors
-	[cell, live-cells]
-	(count (dead-neighbors cell live-cells)))
 
 (defn stay-alive? [cell live-cells]
 	(#{2 3} (num-live-neighbors cell live-cells)))
