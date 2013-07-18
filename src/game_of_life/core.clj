@@ -1,8 +1,8 @@
 (ns game-of-life.core)
 
-(use '[clojure.set :only union difference])
+(use '[clojure.set :only [union difference]])
 
-(def live-cells-test #{[2 1] [2 3] [0 0] [1 3]})
+(def live-cells-test #{[2 1] [2 3] [0 0] [1 3] [2 2] [3 3]})
 
 (defn neighbors [[x y]]
 	(disj (set (for [i (range (- x 1) (+ x 2))
@@ -36,8 +36,3 @@
 		(set (concat
 			(filter #(come-alive? % live-cells) all-dead-neighbors)
 			(filter #(stay-alive? % live-cells) live-cells)))))
-
-; X # # #
-; # # X # 
-; # # # #
-; # X X #
