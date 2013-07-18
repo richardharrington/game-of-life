@@ -30,3 +30,11 @@
 		(set (concat
 			(filter #(come-alive? % live-cells) all-dead-neighbors)
 			(filter #(stay-alive? % live-cells) live-cells)))))
+
+(defn play [initial-live-cells]
+	(loop [live-cells initial-live-cells]
+		(when (not-empty live-cells)
+			(println live-cells)
+			(Thread/sleep 150)
+			(recur (next-live-cells live-cells)))))
+
