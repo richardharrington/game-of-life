@@ -31,10 +31,18 @@
 			(filter #(come-alive? % live-cells) all-dead-neighbors)
 			(filter #(stay-alive? % live-cells) live-cells)))))
 
+(defn print-cells [live-cells width height]
+	(println (apply str (repeat width "-")))
+	(println (apply str (apply concat (for [y (range height)]
+										(conj (vec (for [x (range width)]
+												   (if (live-cells [x y])
+													"*"
+													" ")))
+											   	"\n") ) ))))
+
 (defn play [initial-live-cells]
 	(loop [live-cells initial-live-cells]
 		(when (not-empty live-cells)
-			(println live-cells)
+			(print-cells live-cells 10 10)
 			(Thread/sleep 150)
 			(recur (next-live-cells live-cells)))))
-
