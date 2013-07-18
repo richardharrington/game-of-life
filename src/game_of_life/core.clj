@@ -1,6 +1,7 @@
 (ns game-of-life.core)
 
 (use '[clojure.set :only [union difference]])
+(use '[clojure.string :only [join]])
 
 (def live-cells-test #{[2 1] [2 3] [0 0] [1 3] [2 2] [3 3]})
 
@@ -33,12 +34,11 @@
 
 (defn print-cells [live-cells width height]
 	(println (apply str (repeat width "-")))
-	(println (apply str (apply concat (for [y (range height)]
-										(conj (vec (for [x (range width)]
-												   (if (live-cells [x y])
-													"*"
-													" ")))
-											   	"\n") ) ))))
+	(println (join "\n" (for [y (range height)]
+							(apply str (for [x (range width)]
+									     (if (live-cells [x y])
+										    "*"
+										    " ")))))))
 
 (defn play [initial-live-cells]
 	(loop [live-cells initial-live-cells]
