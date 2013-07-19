@@ -41,9 +41,9 @@
                                        "*"
                                        " ")))))))
 
-(defn play [initial-live-cells]
+(defn play [initial-live-cells width height millisecs]
   (loop [live-cells initial-live-cells]
     (when (not-empty live-cells)
-      (print-cells live-cells 10 10)
-      (Thread/sleep 150)
+      (print-cells live-cells width height)
+      (Thread/sleep millisecs)
       (recur (next-live-cells live-cells)))))
