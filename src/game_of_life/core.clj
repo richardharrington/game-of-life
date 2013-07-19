@@ -1,6 +1,5 @@
 (ns game-of-life.core)
 
-(use '[clojure.set :only [union difference]])
 (use '[clojure.string :only [join]])
 
 (def live-cells-test #{[2 1] [2 3] [0 0] [1 3] [2 2] [3 3]})
@@ -11,27 +10,14 @@
                [i j])) 
         [x y]))
 
-(defn live-neighbors [cell, live-cells]
-  (set (filter live-cells (neighbors cell))))
-
-(defn dead-neighbors [cell, live-cells]
-  (difference (neighbors cell) (live-neighbors cell live-cells)))
-
-(defn num-live-neighbors
-  [cell, live-cells]
-  (count (live-neighbors cell live-cells)))
-
-(defn stay-alive? [cell live-cells]
-  (#{2 3} (num-live-neighbors cell live-cells)))
-
-(defn come-alive? [cell live-cells]
-  (= 3 (num-live-neighbors cell live-cells)))
-
 (defn next-live-cells [live-cells]
-  (let [all-dead-neighbors (apply union (map #(dead-neighbors % live-cells) live-cells))]
+  (let [all-dead-neighbors (filter (complement live-cells) (distinct (mapcat neighbors live-cells)))                                       
+        live-neighbors #(filter live-cells (neighbors %))
+        come-alive? #(#{3} (count (live-neighbors %)))
+        stay-alive? #(#{2 3} (count (live-neighbors %)))]
     (set (concat
-           (filter #(come-alive? % live-cells) all-dead-neighbors)
-           (filter #(stay-alive? % live-cells) live-cells)))))
+           (filter come-alive? all-dead-neighbors)
+           (filter stay-alive? live-cells)))))
 
 (defn print-cells [live-cells width height]
   (println (apply str (repeat width "-")))
