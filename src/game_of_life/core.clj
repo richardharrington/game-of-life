@@ -11,13 +11,14 @@
         [x y]))
 
 (defn next-live-cells [live-cells]
-  (let [all-dead-neighbors (filter (complement live-cells) (distinct (mapcat neighbors live-cells)))                                       
-        live-neighbors #(filter live-cells (neighbors %))
-        come-alive? #(#{3} (count (live-neighbors %)))
-        stay-alive? #(#{2 3} (count (live-neighbors %)))]
+  (let [live-neighbors #(filter live-cells (neighbors %))
+        all-dead-neighbors (filter (complement live-cells) 
+                                   (distinct (mapcat neighbors live-cells)))]
     (set (concat
-           (filter come-alive? all-dead-neighbors)
-           (filter stay-alive? live-cells)))))
+           (filter #(#{2 3} (count (live-neighbors %)))
+                   live-cells)
+           (filter #(#{3} (count (live-neighbors %))) 
+                   all-dead-neighbors)))))
 
 (defn print-cells [live-cells width height]
   (println (apply str (repeat width "-")))
@@ -33,3 +34,4 @@
       (print-cells live-cells width height)
       (Thread/sleep millisecs)
       (recur (next-live-cells live-cells)))))
+
