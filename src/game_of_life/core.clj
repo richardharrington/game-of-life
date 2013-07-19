@@ -38,7 +38,7 @@
   (println (join "\n" (for [y (range height)]
                         (apply str (for [x (range width)]
                                      (if (live-cells [x y])
-                                       "*"
+                                       "#"
                                        " ")))))))
 
 (defn play [initial-live-cells width height millisecs]
