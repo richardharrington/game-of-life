@@ -46,8 +46,10 @@
   (println (apply str (repeat width "-")))
   (println (join "\n" (cells->text-grid cells width height))))
 
-(defn play [width height millisecs & [initial-live-cells]]
-  (loop [live-cells (or initial-live-cells (generate-random-cells 0.7 width height))]
+(defn play [width height millisecs & [initial-grid]]
+  (loop [live-cells (if initial-grid
+                      (text-grid->cells initial-grid)
+                      (generate-random-cells 0.7 width height))]
     (print-cells live-cells width height)
     (if (empty? live-cells)
       "That's all folks!"
@@ -56,9 +58,9 @@
         (Thread/sleep millisecs)
         (recur (next-live-cells live-cells))))))
 
-(def live-cells-test-grid ["#    " 
-                            "  # " 
-                            "  # " 
-                            " ###"])
+(def live-cells-test-grid ["M   " 
+                           "  M " 
+                           "  M " 
+                           " MMM"])
 
 ; #{[2 1] [2 3] [0 0] [1 3] [2 2] [3 3]})
