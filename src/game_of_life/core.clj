@@ -2,9 +2,7 @@
 
 (use '[clojure.string :only [join]])
 
-(def live-char \M)
-(def dead-char \space)
-
+(def live-cell-for-printing "()")
 
 (defn next-live-cells [live-cells]
   (let [neighbors (fn [[x y]]
@@ -28,7 +26,7 @@
 
 (defn text-grid->cells [grid]
   (generate-cells (fn [coord-pair]
-                    (#{live-char} (get-in grid coord-pair)))
+                    (re-matches #"\S" (str (get-in grid coord-pair))))
                   (count grid)
                   (count (grid 0))))
 
@@ -39,8 +37,8 @@
   (for [y (range height)]
     (apply str (for [x (range width)]
                  (if (cells [x y])
-                  live-char
-                  dead-char)))))
+                  live-cell-for-printing
+                  \space)))))
 
 (defn print-cells [cells width height]
   (println (apply str (repeat width "-")))
@@ -58,9 +56,9 @@
         (Thread/sleep millisecs)
         (recur (next-live-cells live-cells))))))
 
-(def live-cells-test-grid ["M   " 
-                           "  M " 
-                           "  M " 
-                           " MMM"])
+(def live-cells-test-grid ["X   " 
+                           "  X " 
+                           "  X " 
+                           " XXX"])
 
 ; #{[2 1] [2 3] [0 0] [1 3] [2 2] [3 3]})
