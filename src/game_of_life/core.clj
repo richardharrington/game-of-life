@@ -2,8 +2,19 @@
 
 (use '[clojure.string :only [join]])
 
-(def live-cell-for-printing "(•)")
-(def cell-print-width (count live-cell-for-printing))
+
+(def full-sequence [ "   " " · " " • " "(•)" ])
+
+(def dead-to-live-anim (vec (rest full-sequence)))
+(def live-to-dead-anim (vec (rest (reverse full-sequence))))
+
+(def dead-cell-print (last live-to-dead-anim))
+(def live-cell-print (last dead-to-live-anim))
+
+(def anim-frames-num (count dead-to-live-anim))
+
+(def cell-print-width (count live-cell-print))
+
 
 (defn next-live-cells [live-cells]
   (let [neighbors (fn [[x y]]
@@ -18,6 +29,7 @@
     (set (concat
            (filter (count-live-neighbors-matches #{2 3}) live-cells)
            (filter (count-live-neighbors-matches #{3}) dead-cells-nearby)))))
+
 
 (defn generate-cells [pred width height]
   (set (for [y (range height)
@@ -34,29 +46,49 @@
 (defn generate-random-cells [prob width height]
   (generate-cells (fn [_] (> (rand) prob)) width height))
 
-(defn cells->text-grid [cells width height]
-  (for [y (range height)]
-    (apply str (for [x (range width)]
-                 (if (cells [x y])
-                  live-cell-for-printing
-                  (apply str (repeat cell-print-width \space)))))))
+(defn cells->print-grid [cells width height]
+  (for [y (range height)
+        x (range width)]
+    (if (cells [x y])
+      true
+      false)))
 
-(defn print-cells [cells width height]
-  (println width cell-print-width)
-  (println (apply str (repeat (* width cell-print-width) "-")))
-  (println (join "\n" (cells->text-grid cells width height))))
 
+(defn animate [prev-grid grid row-width millisecs]
+  (let [transitions (partition row-width (map vector prev-grid grid))
+        anim-time (quot millisecs anim-frames-num)
+        get-rows (fn [n]
+                   (apply str (map (fn [row] 
+                                     (str (apply str (map (fn [transition]
+                                                            (case transition
+                                                              [true true] live-cell-print
+                                                              [false false] dead-cell-print
+                                                              [false true] (dead-to-live-anim n)
+                                                              [true false] (live-to-dead-anim n)))
+                                                          row))
+                                          "\n"))
+                                   transitions)))]
+    (dorun (map (fn [n]
+                  (println (apply str (repeat (* row-width cell-print-width) "-")))
+                  (println (get-rows n))
+                  (Thread/sleep anim-time))
+                (range anim-frames-num)))))
+
+                                                    
 (defn play [width height millisecs & [initial-grid]]
   (loop [live-cells (if initial-grid
                       (text-grid->cells initial-grid)
-                      (generate-random-cells 0.7 width height))]
-    (print-cells live-cells width height)
-    (if (empty? live-cells)
-      "That's all folks!"
-      (do
-        (println)
-        (Thread/sleep millisecs)
-        (recur (next-live-cells live-cells))))))
+                      (generate-random-cells 0.7 width height))
+         prev-print-grid (cells->print-grid live-cells width height)]
+    (let [print-grid (cells->print-grid live-cells width height)]
+      (animate prev-print-grid print-grid width millisecs)
+      (if (empty? live-cells)
+        "That's all folks!"
+        (do
+          (recur (next-live-cells live-cells) print-grid))))))
+
+
+
 
 (def live-cells-test-grid ["X   " 
                            "  X " 
