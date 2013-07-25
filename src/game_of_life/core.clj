@@ -2,7 +2,8 @@
 
 (use '[clojure.string :only [join]])
 
-(def live-cell-for-printing "()")
+(def live-cell-for-printing "(•)")
+(def cell-print-width (count live-cell-for-printing))
 
 (defn next-live-cells [live-cells]
   (let [neighbors (fn [[x y]]
@@ -38,10 +39,11 @@
     (apply str (for [x (range width)]
                  (if (cells [x y])
                   live-cell-for-printing
-                  \space)))))
+                  (apply str (repeat cell-print-width \space)))))))
 
 (defn print-cells [cells width height]
-  (println (apply str (repeat width "-")))
+  (println width cell-print-width)
+  (println (apply str (repeat (* width cell-print-width) "-")))
   (println (join "\n" (cells->text-grid cells width height))))
 
 (defn play [width height millisecs & [initial-grid]]
