@@ -15,7 +15,6 @@
 
 (def cell-print-width (count live-cell-print))
 
-
 (defn next-live-cells [live-cells]
   (let [neighbors (fn [[x y]]
                     (disj (set (for [i (range (- x 1) (+ x 2))
@@ -29,7 +28,6 @@
     (set (concat
            (filter (count-live-neighbors-matches #{2 3}) live-cells)
            (filter (count-live-neighbors-matches #{3}) dead-cells-nearby)))))
-
 
 (defn generate-cells [pred width height]
   (set (for [y (range height)
@@ -52,7 +50,6 @@
     (if (cells [x y])
       true
       false)))
-
 
 (defn animate [prev-grid grid row-width millisecs]
   (let [transitions (partition row-width (map vector prev-grid grid))
@@ -86,9 +83,6 @@
         "That's all folks!"
         (do
           (recur (next-live-cells live-cells) print-grid))))))
-
-
-
 
 (def live-cells-test-grid ["X   " 
                            "  X " 
