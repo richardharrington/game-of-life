@@ -53,6 +53,7 @@
 (defn animate [prev-grid grid row-width millisecs]
   (let [transitions (partition row-width (map vector prev-grid grid))
         anim-time (quot millisecs anim-frames-num)
+        header-footer (apply str (repeat (* row-width cell-print-width) "-"))
         get-rows (fn [n]
                    (apply str (map (fn [row] 
                                      (str (apply str (map (fn [transition]
@@ -65,9 +66,9 @@
                                           "\n"))
                                    transitions)))]
     (dorun (map (fn [n]
-                  (println (apply str (repeat (* row-width cell-print-width) "-")))
+                  (println header-footer)
                   (print (get-rows n))
-                  (println (apply str (repeat (* row-width cell-print-width) "-")))
+                  (println header-footer)
                   (Thread/sleep anim-time))
                 (range anim-frames-num)))))
 
