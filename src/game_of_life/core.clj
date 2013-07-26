@@ -1,7 +1,5 @@
-(ns game-of-life.core)
-
-(use '[clojure.string :only [join]])
-
+(ns game-of-life.core
+  (:use [clojure.core.match :only [match]]))
 
 (def full-sequence [ "   " " · " " • " "(•)" ])
 
@@ -46,25 +44,25 @@
 (defn cells->print-grid [cells width height]
   (for [y (range height)
         x (range width)]
-    (if (cells [x y])
-      true
-      false)))
+    (cells [x y])))
 
 (defn animate [prev-grid grid row-width millisecs]
   (let [transitions (partition row-width (map vector prev-grid grid))
         anim-time (quot millisecs anim-frames-num)
         header-footer (apply str (repeat (* row-width cell-print-width) "-"))
         get-rows (fn [n]
-                   (apply str (map (fn [row] 
-                                     (str (apply str (map (fn [transition]
-                                                            (case transition
-                                                              [true true] live-cell-print
-                                                              [false false] dead-cell-print
-                                                              [false true] (dead-to-live-anim n)
-                                                              [true false] (live-to-dead-anim n)))
-                                                          row))
-                                          "\n"))
-                                   transitions)))]
+                   (let [dead-to-live-cell-print (dead-to-live-anim n)
+                         live-to-dead-cell-print (live-to-dead-anim n)]
+                     (apply str (map (fn [row] 
+                                       (str (apply str (map (fn [transition]
+                                                              (match [transition]
+                                                                 [[nil nil]] dead-cell-print
+                                                                 [[nil _]]   dead-to-live-cell-print
+                                                                 [[_ nil]]   live-to-dead-cell-print
+                                                                 :else       live-cell-print))
+                                                            row))
+                                            "\n"))
+                                     transitions))))]
     (dorun (map (fn [n]
                   (println header-footer)
                   (print (get-rows n))
