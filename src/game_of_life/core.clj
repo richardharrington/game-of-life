@@ -46,7 +46,7 @@
         x (range width)]
     (cells [x y])))
 
-(defn animate [prev-grid grid row-width millisecs]
+(defn animate [prev-grid grid row-width millisecs game-over?] 
   (let [transitions (partition row-width (map vector prev-grid grid))
         anim-time (quot millisecs anim-frames-num)
         header-footer (apply str (repeat (* row-width cell-print-width) "-"))
@@ -67,7 +67,9 @@
                   (println header-footer)
                   (print (get-rows n))
                   (println header-footer)
-                  (Thread/sleep anim-time))
+                  (when (or (not game-over?) (< n (dec anim-frames-num)))
+                    (println) 
+                    (Thread/sleep anim-time)))
                 (range anim-frames-num)))))
 
                                                     
@@ -76,12 +78,12 @@
                       (text-grid->cells initial-grid)
                       (generate-random-cells 0.7 width height))
          prev-print-grid (cells->print-grid live-cells width height)]
-    (let [print-grid (cells->print-grid live-cells width height)]
-      (animate prev-print-grid print-grid width millisecs)
-      (if (empty? live-cells)
+    (let [print-grid (cells->print-grid live-cells width height)
+          game-over? (empty? live-cells)]
+      (animate prev-print-grid print-grid width millisecs game-over?)
+      (if game-over?
         "That's all folks!"
-        (do
-          (recur (next-live-cells live-cells) print-grid))))))
+        (recur (next-live-cells live-cells) print-grid)))))
 
 (def live-cells-test-grid ["X   " 
                            "  X " 
