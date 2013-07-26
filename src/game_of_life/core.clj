@@ -13,11 +13,11 @@
 
 (def cell-print-width (count live-cell-print))
 
-(defn next-live-cells [live-cells width height]
+(defn next-live-cells [live-cells]
   (let [neighbors (fn [[x y]]
-                    (set (for [i (range (- x 1) (+ x 2))
-                               j (range (- y 1) (+ y 2))]
-                           [(mod i width) (mod j height)])))
+                    (set (for [dx [-1 0 1]
+                               dy [-1 0 1]]
+                           [(+ x dx) (+ y dy)])))
         count-live-neighbors-matches (fn [pred]
                                        #(pred (count (filter live-cells (neighbors %)))))
         dead-cells-nearby (filter (complement live-cells) 
@@ -81,7 +81,7 @@
       (if (empty? live-cells)
         "That's all folks!"
         (do
-          (recur (next-live-cells live-cells width height) print-grid))))))
+          (recur (next-live-cells live-cells) print-grid))))))
 
 (def live-cells-test-grid ["X   " 
                            "  X " 
