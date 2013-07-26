@@ -15,18 +15,17 @@
 
 (def cell-print-width (count live-cell-print))
 
-(defn next-live-cells [live-cells]
+(defn next-live-cells [live-cells width height]
   (let [neighbors (fn [[x y]]
-                    (disj (set (for [i (range (- x 1) (+ x 2))
-                                     j (range (- y 1) (+ y 2))]
-                                 [i j])) 
-                          [x y]))
+                    (set (for [i (range (- x 1) (+ x 2))
+                               j (range (- y 1) (+ y 2))]
+                           [(mod i width) (mod j height)])))
         count-live-neighbors-matches (fn [pred]
                                        #(pred (count (filter live-cells (neighbors %)))))
         dead-cells-nearby (filter (complement live-cells) 
                                   (distinct (mapcat neighbors live-cells)))]
     (set (concat
-           (filter (count-live-neighbors-matches #{2 3}) live-cells)
+           (filter (count-live-neighbors-matches #{3 4}) live-cells)
            (filter (count-live-neighbors-matches #{3}) dead-cells-nearby)))))
 
 (defn generate-cells [pred width height]
@@ -67,7 +66,8 @@
                                    transitions)))]
     (dorun (map (fn [n]
                   (println (apply str (repeat (* row-width cell-print-width) "-")))
-                  (println (get-rows n))
+                  (print (get-rows n))
+                  (println (apply str (repeat (* row-width cell-print-width) "-")))
                   (Thread/sleep anim-time))
                 (range anim-frames-num)))))
 
@@ -82,7 +82,7 @@
       (if (empty? live-cells)
         "That's all folks!"
         (do
-          (recur (next-live-cells live-cells) print-grid))))))
+          (recur (next-live-cells live-cells width height) print-grid))))))
 
 (def live-cells-test-grid ["X   " 
                            "  X " 
