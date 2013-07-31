@@ -63,16 +63,14 @@
                                                             row))
                                             "\n"))
                                      transitions))))]
-    (dorun (map (fn [n]
-                  (println header-footer)
-                  (print (get-rows n))
-                  (println header-footer)
-                  (when (or (not game-over?) (< n (dec anim-frames-num)))
-                    (println) 
-                    (Thread/sleep anim-time)))
-                (range anim-frames-num)))))
+    (doseq [n (range anim-frames-num)]
+      (println header-footer)
+      (print (get-rows n))
+      (println header-footer)
+      (when (or (not game-over?) (< n (dec anim-frames-num)))
+        (println) 
+        (Thread/sleep anim-time)))))
 
-                                                    
 (defn play [width height millisecs & [initial-grid]]
   (loop [live-cells (if initial-grid
                       (text-grid->cells initial-grid)
