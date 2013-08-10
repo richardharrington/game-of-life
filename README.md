@@ -1,13 +1,13 @@
-# Game of Life
+Game of Life
+------------------
+An implementation of Conway's Game of Life, with animation in the terminal.
 
-A Clojure library designed to ... well, that part is up to you.
+To run:
 
-## Usage
-
-FIXME
-
-## License
-
-Copyright © 2013 FIXME
-
-Distributed under the Eclipse Public License, the same as Clojure.
+1. Install [leiningen](https://github.com/technomancy/leiningen).
+2. Clone this repository.
+3. In the terminal, in the repo directory: `lein repl`
+4. In the repl: `(play <width> <height> <milliseconds-per-round>)`
+5. Adjust the height and width of your terminal window.
+6. Repeat steps 4 and 5 until the dotted line in the window is just below the top of the window, and does not wrap around to more than one line.
+7. Boom, animation!
