@@ -83,9 +83,10 @@
         "That's all folks!"
         (recur (next-live-cells live-cells) print-grid)))))
 
-(def live-cells-test-grid ["X   " 
-                           "  X " 
-                           "  X " 
-                           " XXX"])
+(def live-cells-test-grid ["     " 
+                           " X   " 
+                           "   X " 
+                           "   X " 
+                           "  XXX"])
 
 ; #{[2 1] [2 3] [0 0] [1 3] [2 2] [3 3]})
