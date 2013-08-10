@@ -2,6 +2,8 @@ Game of Life
 ------------------
 An implementation of Conway's Game of Life, with animation in the terminal.
 
+![game of life gif](readme_images/game_of_life.gif)
+
 To run in a terminal program:
 
 1. Install [leiningen](https://github.com/technomancy/leiningen).
@@ -14,4 +16,3 @@ To run in a terminal program:
 8. Boom, animation!
 9. (optional) To start with the pattern below: `(play <width> <height> <milliseconds-per-round> live-cells-test-grid)`
 
-![game of life gif](readme_images/game_of_life.gif)
