@@ -11,3 +11,5 @@ To run:
 5. Adjust the height and width of your terminal window.
 6. Repeat steps 4 and 5 until the dotted line in the window is just below the top of the window, and does not wrap around to more than one line.
 7. Boom, animation!
+
+![game of life gif](readme_images/game_of_life.gif)
